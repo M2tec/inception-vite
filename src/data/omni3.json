@@ -1,0 +1,41 @@
+{
+    "type": "script",
+    "title": "OMNI Treasury - 4 of 6 signers - funded - Gift Wallets",
+    "description": "Creates a workspace named 'DAO' with a 'OMNI Treasury' address where at least 3 of 4 signer wallets are required for spending and staking operations. A second address on the workspace is called main address as 'Signer'. To manage the treasury set 'OMNI Treasury' address as current. To sign as a member, set 'Signer' address instead.",
+    "exportAs": "OmniArk",
+    "return": {
+        "mode": "last"
+    },
+    "run": {
+        "wallets": {
+            "type": "walletGenerator",
+            "amount": 6,
+            "defaultNamePattern": "Member1 {index}",
+            "defaultDescriptionPattern": "Wallet for DAO Member #{index}",
+            "defaultKeyPattern": "Member_{index}",
+            "defaultHintPattern": "Your password is '{password}'",
+            "qr": true,
+            "download": true
+        },
+        "addresses": {
+            "type": "macro",
+            "run": {
+                "Member_0": "{getAddressInfo(get('cache.wallets.Member_0.address'))}",
+                "Member_1": "{getAddressInfo(get('cache.wallets.Member_1.address'))}",
+                "Member_2": "{getAddressInfo(get('cache.wallets.Member_2.address'))}",
+                "Member_3": "{getAddressInfo(get('cache.wallets.Member_3.address'))}",
+                "Member_4": "{getAddressInfo(get('cache.wallets.Member_4.address'))}",
+                "Member_5": "{getAddressInfo(get('cache.wallets.Member_5.address'))}"
+            }
+        },
+        "finally": {
+            "type": "script",
+            "run": {
+                "lock": {
+                    "type": "macro",
+                    "run": "{get('cache.wallets')}"
+                }
+            }
+        }
+    }
+}

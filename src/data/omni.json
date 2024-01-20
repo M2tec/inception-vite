@@ -1,0 +1,203 @@
+{
+    "type": "script",
+    "title": "Treasury - 3 of 6 signers - funded - Gift Wallets",
+    "description": "Creates a workspace named 'DAO' with a 'OMNI Treasury' address where at least 3 of 4 signer wallets are required for spending and staking operations. A second address on the workspace is called main address as 'Signer'. To manage the treasury set 'OMNI Treasury' address as current. To sign as a member, set 'Signer' address instead.",
+    "exportAs": "OmniArk",
+    "return": {
+        "mode": "last"
+        },
+    "run": {
+        "wallets": {
+            "type": "walletGenerator",
+            "amount": 6,
+            "defaultNamePattern": "Member {index}",
+            "defaultDescriptionPattern": "Wallet for DAO Member #{index}",
+            "defaultKeyPattern": "Member_{index}",
+            "defaultHintPattern": "Your password is '{password}'",
+            "qr": true,
+            "download": true
+        },
+        "addresses": {
+            "type": "macro",
+            "run": {
+                "Member_0": "{getAddressInfo(get('cache.wallets.Member_0.address'))}",
+                "Member_1": "{getAddressInfo(get('cache.wallets.Member_1.address'))}",
+                "Member_2": "{getAddressInfo(get('cache.wallets.Member_2.address'))}",
+                "Member_3": "{getAddressInfo(get('cache.wallets.Member_3.address'))}",
+                "Member_4": "{getAddressInfo(get('cache.wallets.Member_0.address'))}",
+                "Member_5": "{getAddressInfo(get('cache.wallets.Member_1.address'))}"
+            }
+        },
+        "walletSetup": {
+            "type": "loadConfig",
+            "updateId": "OmniArk",
+            "layers": [
+                {
+                    "type": "Workspace",
+                    "items": [
+                        {
+                            "namePattern": "dao",
+                            "titlePattern": "DAO",
+                            "descriptionPattern": "Wallet settings that creates a shared treasury of at least 3 of 4 signers for spending and staking operations"
+                        }
+                    ]
+                },
+                {
+                    "type": "Key",
+                    "workspaceIds": [
+                        "dao"
+                    ],
+                    "items": [
+                        {
+                            "namePattern": "spend-member",
+                            "kind": "spend",
+                            "accountIndex": 0,
+                            "addressIndex": 0
+                        },
+                        {
+                            "namePattern": "stake-member",
+                            "kind": "stake",
+                            "accountIndex": 0,
+                            "addressIndex": 0
+                        }
+                    ]
+                },
+                {
+                    "type": "NativeScript",
+                    "workspaceIds": [
+                        "dao"
+                    ],
+                    "namePattern": "dao_{key}_script",
+                    "items": {
+                        "spend": {
+                            "atLeast": 4,
+                            "ofThese": {
+                                "Member_0": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_0.paymentKeyHash')}"
+                                },
+                                "Member_1": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_1.paymentKeyHash')}"
+                                },
+                                "Member_2": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_2.paymentKeyHash')}"
+                                },
+                                "Member_3": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_3.paymentKeyHash')}"
+                                },
+                                "Member_4": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_2.paymentKeyHash')}"
+                                },
+                                "Member_5": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_3.paymentKeyHash')}"
+                                }
+                            }
+                        },
+                        "stake": {
+                            "atLeast": 3,
+                            "ofThese": {
+                                "Member_0": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_0.stakingKeyHash')}"
+                                },
+                                "Member_1": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_1.stakingKeyHash')}"
+                                },
+                                "Member_2": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_2.stakingKeyHash')}"
+                                },
+                                "Member_3": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_3.stakingKeyHash')}"
+                                },
+                                "Member_4": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_2.stakingKeyHash')}"
+                                },
+                                "Member_5": {
+                                    "pubKeyHashHex": "{get('cache.addresses.Member_3.stakingKeyHash')}"
+                                }
+                            }
+                        }
+                    }
+                },
+                {                 
+                    "type": "Address",
+                    "workspaceIds": [
+                        "dao"
+                    ],
+                    "items": {
+                        "wallet_0": {
+                            "namePattern": "Signer",
+                            "spendPubKeyName": "spend-member",
+                            "stakePubKeyName": "stake-member"
+                        }
+                    }
+                }
+            ]
+        },
+        "setWorkspace": {
+            "type": "setCurrentWorkspace",
+            "workspaceId": "dao"
+        },
+        "workspaceAddresses": {
+            "type": "getAddresses",
+            "filter": {
+                "name": "OMNI Treasury"
+            },
+            "keyPattern": "dao_address"
+        },
+        "assets": {
+            "type": "data",
+            "value": [
+                {
+                    "policyId": "ada",
+                    "assetName": "ada",
+                    "quantity": "5000000"
+                }
+            ]
+        },
+        "buildAirdrop": {
+            "type": "buildTx",
+            "title": "💝 Omni Ark Airdrop",
+            "returnURLPattern": "https://omniark.solutions",
+            "tx": {
+                "outputs": [
+                    {
+                        "address": "{get('cache.workspaceAddresses.dao_address.address')}",
+                        "assets": "{get('cache.assets')}"
+                    }
+                ],
+                "auxiliaryData": {
+                    "674": {
+                        "msg": [
+                            "Thank you for joining efforts with Omni Ark!\n",
+                            "We hope to see you in future collaborations.\n",
+                            "Don't forget to share with your neighbor\n"
+                        ]
+                    }
+                }
+            }
+        },
+        "profile": {
+        "type": "saveConfig",
+        "layers": "{get('cache.walletSetup.layers')}"
+        },
+        "signAirdrop": {
+            "type": "signTxs",
+            "txs": [
+                "{get('cache.buildAirdrop.txHex')}"
+            ],
+            "detailedPermissions": false
+        },
+        "submitAirdrop": {
+            "type": "submitTxs",
+            "txs": "{get('cache.signAirdrop')}"
+        },
+        "finally": {
+            "type": "macro",
+            "run": {
+                "signers": "{get('cache.wallets')}",
+                "sharedTreasuryAddress": "{get('cache.workspaceAddresses.dao_address.address')}",
+                "airdropTxHash": "{get('cache.buildAirdrop.txHash')}",
+                "save": "{get('cache.profile')}"
+            }
+        }
+    }
+}
