@@ -391,9 +391,15 @@ function stateReducer(state, action) {
             return state
         }
         case 'set-alert': {
+            console.log("set-alert")
             console.log({action})
-            
-            return state
+
+            let newAlerts = state.alerts
+            newAlerts.push(action.message)
+
+            let newState = {...state, alerts:newAlerts}
+            saveState(newState)
+            return newState
         }
         default: {
             throw Error('Unknown action: ' + action.type);
@@ -425,7 +431,8 @@ if (storageState == null) {
     initialState = {
         ...Token_Locking,
         ...appData,
-        advertisement: true
+        advertisement: true,
+        alerts:[]
     }
 } else {
     console.log("Load from storage")
@@ -437,8 +444,8 @@ if (storageState == null) {
         ...storageState,
         ...appData,
         currentFileIndex:smallest,
-        openFiles: [smallest]
-        // advertisement: true
+        openFiles: [smallest],
+        alerts:[]
     };
 }
 

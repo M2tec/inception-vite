@@ -2,10 +2,11 @@ import React from 'react';
 import SourceViewer from './SourceViewer';
 import { useAppState, useStateDispatch } from '../AppContext';
 import { X } from 'react-bootstrap-icons';
+import Alert from 'react-bootstrap/Alert';
 
 export default function TabComponent(props) {
     const dispatch = useStateDispatch();
-    const { files, openFiles, currentFileIndex } = useAppState();
+    const { alerts, files, openFiles, currentFileIndex } = useAppState();
 
     const GcTab = ({
         id
@@ -40,8 +41,6 @@ export default function TabComponent(props) {
     return (
         <div className="TabContainer">
             <div className='TabBar'>
-                {/* {console.log({openfiles:openFiles})}
-                {console.log({files:files})} */}
                 {openFiles.map((id, index) => {
                     return (
                         <GcTab
@@ -57,6 +56,13 @@ export default function TabComponent(props) {
                 {/* {console.log(currentFileIndex)} */}
                 <SourceViewer id={currentFileIndex} readOnly={false} />
             </div>
+
+            {alerts.length > 0 ? (
+                <Alert key={'warning'} variant={'warning'}>
+                    {alerts.map((alert, index) => <div key={index}>{alert}</div>)}
+                </Alert>)
+                :
+                null}
 
         </div>
     );

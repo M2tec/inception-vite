@@ -58,10 +58,10 @@ ul {
 .PanelGroup {
   height: 100%;
 }
-
+/* 
 .TabPane {
   height: 100%;
-}
+} */
 
 .TabPaneActive {
   display: flex;
@@ -103,9 +103,16 @@ ul {
   background-color: red;
 }
 
+.AlertView {
+  display: flex;
+  flex-direction: column;
+}
+
 .tab-content {
   height: 90%;
 }
+
+
 
 .handle {
   width: 8px;

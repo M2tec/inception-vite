@@ -239,6 +239,7 @@ export const transpile = async ({
 
     const fileBuff  = await getResource(fileUri,{files})
         .catch((err)=>{
+            console.log("TranspileError: " + err)
             throw createError({
                 type:"TranspilerError",
                 fileUri,
@@ -248,6 +249,7 @@ export const transpile = async ({
         });
     const code      = await getBufferAs(fileBuff,'json')
         .catch((err)=>{
+            console.log("SyntaxError: " + err)
             throw createError({
                 type:"SyntaxError",
                 fileUri,

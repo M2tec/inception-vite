@@ -5,10 +5,10 @@ import { heliosSyntax } from './HeliosSyntaxMonaco';
 import { GameChangerSyntax } from './GameChangerSyntaxMonaco'
 
 import { useAppState, useStateDispatch } from '../AppContext';
-import Alert from 'react-bootstrap/Alert';
+
 
 const SourceViewer = (props) => {
-  const { theme, advertisement, alert } = useAppState();
+  const { theme, advertisement, alerts } = useAppState();
 
   const element = React.useRef(null);
   const [width, setWidth] = React.useState(0);
@@ -75,10 +75,9 @@ const SourceViewer = (props) => {
       let alertHeight;
 
       advertisement === true ? advertisementHeight = 110 : advertisementHeight = 0
-      alert !== undefined ? alertHeight = 100 : alertHeight = 0
-      console.log(alert)
+      alerts.length > 0 ? alertHeight = 100 : alertHeight = 0
 
-       setBodyHeight(cr.height - tabAndNavHeight - alertHeight)
+      setBodyHeight(cr.height - tabAndNavHeight - alertHeight)
       
     }
   });
@@ -88,7 +87,8 @@ const SourceViewer = (props) => {
     () =>
       new ResizeObserver((entries) => {
         // console.log(entries[0].target.getBoundingClientRect().width - 1)
-        setWidth(entries[0].target.getBoundingClientRect().width - 1);
+
+        setWidth(entries[0].target.getBoundingClientRect().width);
         // setHeight(entries[0].target.getBoundingClientRect().height - 30);
       }),
     []
@@ -133,9 +133,7 @@ const SourceViewer = (props) => {
     });
   }
 
-  return (<>
-
-    <div className='AlertView'>
+  return (
     <div className='DataView' ref={sizeRef}>
       <Editor
         theme={theme === "light" ? "light" : "vs-dark"}
@@ -149,16 +147,6 @@ const SourceViewer = (props) => {
         onMount={handleEditorDidMount}
       />
     </div>
-    {alert !== undefined ? (
-    <Alert key={'warning'} variant={'warning'}>
-      {alert}
-      This is a alert—check it out!
-     </Alert>) 
-     :
-     null}
-
-    </div>
-  </>
   )
 };
 

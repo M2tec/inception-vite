@@ -110,15 +110,7 @@ function File({ file, dots }) {
       (async () => {
 
         try{
-          // if(lastToastCloseFn){
-          //   lastToastCloseFn();
-          //   lastToastCloseFn=undefined;
-          // }
-          //console.log("Filename: " + file.name)
           let topLevelFiles = files.filter((file) => file.parentId === -1)
-          //console.log({files})
-          //console.log({topLevelFiles})
-
           const transpiled = await transpile({
             fileUri:`ide://${file.name||""}`,
             files:topLevelFiles,
@@ -140,29 +132,13 @@ function File({ file, dots }) {
             path,
             message
           });
-
           dispatch({
             type: 'set-alert',
             message: message
           });
-          
-          // const toastId = toast.error(`${message||"Unknown error"} [${[fileUri,path].join("->")}]`,{  
-          //   onClick: () => {
-          //     hide();
-          //   },
-          //   hideAfter:10,
-          //   heading:type||"UnknownError"
-          // });
-          // lastToastCloseFn=hide;
         }
 
       })()
-    }
-    return ()=>{<></>
-      // if(lastToastCloseFn){
-      //   lastToastCloseFn();
-      //   lastToastCloseFn=undefined;
-      // }
     }
   }, [file, currentFileIndex, files])
 
